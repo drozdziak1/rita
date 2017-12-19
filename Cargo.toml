@@ -10,3 +10,6 @@ ip_network = "0.1"
 log = "0.3"
 docopt = "0.8.1"
 simple_logger = "0.4.0"
+diesel = { version = "1.0.0-beta1", features = ["sqlite"] }
+diesel_infer_schema = { version = "1.0.0-beta1", features = ["sqlite"] }
+dotenv = "0.9.0"

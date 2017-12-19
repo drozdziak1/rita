@@ -1,0 +1,5 @@
+CREATE TABLE neighbors (
+  id INTEGER NOT NULL PRIMARY KEY,
+  debt INTEGER,
+  ip TEXT,
+)

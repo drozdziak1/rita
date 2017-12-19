@@ -1,6 +1,15 @@
 #![feature(getpid)]
+
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate diesel_infer_schema;
+
 extern crate althea_kernel_interface;
 extern crate babel_monitor;
+
+pub mod schema;
+pub mod models;
 
 use std::process;
 
@@ -49,6 +58,9 @@ fn main() {
     let mut babel = Babel::new(&"[::1]:8080".parse::<SocketAddr>().unwrap());
     trace!("Connected to babel at {}", "[::1]:8080");
 
+    let sqlite = SqliteConnection::establish(&database_url)
+        .expect(&format!("Error connecting to {}", database_url));
+
     let mut neigh_debts = HashMap::new();
 
     loop {
@@ -67,9 +79,10 @@ fn main() {
             if let IpNetwork::V6(ref ip) = route.prefix {
                 // Only host addresses
                 if ip.get_netmask() == 128 {
-                    destinations.insert(ip.get_network_address().to_string(), route.price);
+                    let addr = ip.get_network_address();
+                    destinations.insert(addr.to_string(), route.price);
                     for &(neigh_mac, _) in &neighbors {
-                        ki.start_flow_counter(neigh_mac, IpAddr::V6(ip.get_network_address()))
+                        ki.start_flow_counter(neigh_mac, IpAddr::V6(addr))
                             .unwrap();
                     }
                 }
@@ -91,7 +104,9 @@ fn main() {
             let debt = *price as u64 * bytes;
             trace!("Calculated neighbor debt. price: {:?}, debt: {:?}", price, debt);
 
-            *neigh_debts.entry(neigh_mac.to_string()).or_insert(0) += debt;
+            let neigh_ip = neighbors.entry(neigh_mac.to_string());
+
+            diesel::update(neighbors.filter(ip.eq(neigh_ip))).first(&sqlite);
         }
 
         info!("Current neighbor debts: {:?}", neigh_debts);
