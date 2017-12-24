@@ -1,0 +1,6 @@
+[submodule "babel_monitor"]
+	path = babel_monitor
+	url = git@github.com:althea-mesh/babel_monitor
+[submodule "althea_kernel_interface"]
+	path = althea_kernel_interface
+	url = git@github.com:althea-mesh/althea_kernel_interface
