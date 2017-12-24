@@ -1,3 +1,17 @@
+# Building
+This repository relies on [git
+submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules). To pull
+everything and build, run:
+```sh
+$ ./submodules.sh
+$ cargo build
+```
+
+**Note: even though `submodules.sh` will not touch unstaged or uncommitted
+subchanges, it might rewind each submodule to the point chosen by the Rita repo.
+Keep this in mind when doing ad-hoc tests on modified dependencies.**
+
+# Original README
 the daemon calls ip neighbor to get active neighbors.
 
 it then calls babeld to get destinations and prices.
