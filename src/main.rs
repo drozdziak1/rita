@@ -44,7 +44,7 @@ fn main() {
     }
 
     trace!("Starting");
-    let mut ki = KernelInterface::new();
+    let mut ki = KernelInterface{};
 
     let mut babel = Babel::new(&"[::1]:8080".parse::<SocketAddr>().unwrap());
     trace!("Connected to babel at {}", "[::1]:8080");
